@@ -3,8 +3,8 @@
 Auteur    : Thomas FAGEOL
 Date      : 22/05/2022
 Version   : 1.1
-RÈvisions : 
-  - 1.0 : CrÈation
+R√©visions : 
+  - 1.0 : Cr√©ation
   - 1.1 : Base du script
 Description : Import des utilisateurs dans l'ad depuis un fichier CSV
 
@@ -22,34 +22,34 @@ $NewUsersList = Import-CSV ".\userstobeimported.csv"
 
 # Parcours du fichier CSV
 ForEach ($User in $NewUsersList) {
-    # RÈcupÈration du PrÈnom
+    # R√©cup√©ration du Pr√©nom
     $givenName = $User.givenName
 
-    # RÈcupÈration du Nom
+    # R√©cup√©ration du Nom
     $Name = $User.Nom
     
-    # RÈcupÈration du nom díouverture de session de líutilisateur
+    # R√©cup√©ration du nom d√©ouverture de session de l√©utilisateur
 	$sAMAccountName = $User.sAMAccountName
 	
-    # RÈcupÈration du nom díouverture de session de líutilisateur ª concatÈnÈ au nom du domaine
+    # R√©cup√©ration du nom d√©ouverture de session de l√©utilisateur √© concat√©n√© au nom du domaine
     $userPrincipalName = $User.sAMAccountName+$Domain
 
-    # RÈcupÈration du mail
+    # R√©cup√©ration du mail
     $userMail = $User.Mail
 
-    # RÈcupÈration de la fonction
+    # R√©cup√©ration de la fonction
     $userTitle = $User.Fonction
 
-    # RÈcupÈration du service
+    # R√©cup√©ration du service
     $userDepartment = $User.Service
 
-    # CrÈation de l'utilisateur
+    # Cr√©ation de l'utilisateur
 	New-ADUser -Name $Name -GivenName $givenName -SamAccountName $sAMAccountName -mail $userMail -Title $userTitle -Department $userDepartment -SearchBase $UserOu -Path "OU=Utilisateurs,OU=$NewClient,$OUBase" -Enabled $True
     
     # Ajout de l'utilisateur dans le groupe de son service
     Add-ADGroupMember -Identity $userDepartment -User $sAMAccountName
 
-    # Ajout de l'utilisateur dans le groupe pour accËs au fichier de son service
+    # Ajout de l'utilisateur dans le groupe pour acc√©s au fichier de son service
     $groupeFichier = "GG_"+$userDepartment
     Add-ADGroupMember -Identity $groupeFichier -User $sAMAccountName
 }                                            
