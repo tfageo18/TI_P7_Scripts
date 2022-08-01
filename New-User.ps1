@@ -16,10 +16,10 @@ If ($debug -eq 0) { Import-Module ActiveDirectory }
 # Variables
 $services           = @('Direction','RH','Finance','Commercial','Logistique','Marketing','Stagiaire','Informatique') # Liste des services
 $domaineemail       = 'axeplane.loc' # Domaine
-$ous                = '' # OU des utilisateurs
-$ougroupe           = '' # OU des groupes
-$chemindossierperso = 'c:\' # Chemin dossier perso pour la création
-$cheminpartage      = '' # Chemin du partage pour le HomePath
+$ous                = 'OU=Utilisateurs,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des utilisateurs
+$ougroupe           = 'OU=Droits fichiers,OU=Groupes,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des groupes
+$chemindossierperso = 'E:\Utilisateurs\' # Chemin dossier perso pour la création
+$cheminpartage      = '\\SRVAXEPLANE01\Utilisateurs$\' # Chemin du partage pour le HomePath
 $lettrepartage      = 'Z:' # Lettre réseau
 # Liste des droits d'accès pour les fichiers
 If ($debug -eq 0) { 
@@ -117,5 +117,4 @@ $chemindossierperso = $chemindossierperso+'\'+$login
 mkdir $chemindossierperso
 
 # Partage dossier perso
-$nompartage = $login+'$'
-New-SmbShare -Name $nompartage -Path $chemindossierperso -FullAccess "Administrateurs","Admins du domaine",$login
+New-SmbShare -Name $login -Path $chemindossierperso -FullAccess "Administrateurs","Admins du domaine",$login
