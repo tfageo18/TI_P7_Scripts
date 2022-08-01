@@ -20,6 +20,7 @@ $ous                = '' # OU des utilisateurs
 $ougroupe           = '' # OU des groupes
 $chemindossierperso = 'c:\' # Chemin dossier perso pour la création
 $cheminpartage      = '' # Chemin du partage pour le HomePath
+$lettrepartage      = 'Z:' # Lettre réseau
 # Liste des droits d'accès pour les fichiers
 If ($debug -eq 0) { 
   $groupesfichiers = @()
@@ -46,7 +47,7 @@ $nomcomplet = $prenom+' '+$nom
 # Génération du login (1ère lettre du prénom + . + nom de famille)
 $login = $prenom.substring(0, 1).ToLower()+'.'+$nom.ToLower()
 
-# Génération du HomeDrive
+# Génération du HomeDirectory 
 $cheminpartage = $cheminpartage+'\'+$login+'$'  
 
 # Choix du service depuis la liste
@@ -83,7 +84,8 @@ If ($debug -eq 0) {
   -AccountPassword(Read-Host -AsSecureString "Input Password") `
   -Enabled $true `
   -PasswordNeverExpire $false `
-  -HomeDrive  $cheminpartage `
+  -HomeDirectory $cheminpartage `
+  -HomeDrive $lettrepartage `
 }
 
 # Ajout du groupe du service à l'utilisateur
