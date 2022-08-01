@@ -106,7 +106,7 @@ If ($debug -eq 0) {
     Add-ADGroupMember -Identity $groupesfichiers[$nbgroupesfichiers] -Members $login
     
     $confirmation = Read-Host "Voulez-vous ajouter d'autres groupes(o/n) ?"
-    if ($confirmation -ne 'o') { $continue = $false }
+    If ($confirmation -ne 'o') { $continue = $false }
   }
 }
 
