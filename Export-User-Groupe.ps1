@@ -18,9 +18,9 @@ $ou = 'OU=Utilisateurs,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des groupes
 # Liste des droits d'accès pour les fichiers
 If ($debug -eq 0) { 
   $utilAD = @()
-  $utils  = Get-ADUser -SearchBase $ou -Filter * | Sort-Object | select Name 
+  $utils  = Get-ADUser -SearchBase $ou -Filter * | Sort-Object | Select-Object SamAccountName 
 
-  ForEach ($util in $utils) { $utilAD += $util.Name }
+  ForEach ($util in $utils) { $utilAD += $util.SamAccountName }
 }
 
 # Export
@@ -34,9 +34,13 @@ If ($debug -eq 0) {
 
   $nomUtil  = $utilAD[$nbutilAD]
 
-  If ($question -eq 'n') {
-    (Get-ADuser -Identity $nomUtil -Properties memberof).memberof
-  }
   If ($question -eq 'o') {
+    If(Test-Path("C:\ADUserGroup-$nomUtil.csv")) { Remove-Item C:\ADUserGroup-$nomUtil.csv }
+    (Get-ADuser -Identity $nomUtil -Properties memberof).memberof | Get-ADGroup | Select-Object Name | Sort-Object Name | Export-CSV C:\ADUserGroup-$nomUtil.csv
   }
+  If ($question -eq 'n') {
+    Write-Host "Liste des groupe de l'utilisateur $nomUtil : " -ForegroundColor Yellow
+    (Get-ADuser -Identity $nomUtil -Properties memberof).memberof | Get-ADGroup | Select-Object Name | Sort-Object Name
+  }
+  
 }

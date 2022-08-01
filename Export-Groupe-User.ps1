@@ -18,7 +18,7 @@ $ou = 'OU=Groupes,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des groupes
 # Liste des droits d'accès pour les fichiers
 If ($debug -eq 0) { 
   $groupesAD = @()
-  $groupes = Get-ADGroup -SearchBase $ou -Filter * | Sort-Object | select Name 
+  $groupes = Get-ADGroup -SearchBase $ou -Filter * | Sort-Object | Select-Object Name 
 
   ForEach ($groupe in $groupes) { $groupesAD += $groupe.Name }
 }
@@ -39,12 +39,12 @@ If ($debug -eq 0) {
   If ($nbuser -gt 0) {
     
     If ($question -eq 'o') { 
-      Remove-Item C:\ADGroupMember-$nomGroupe.csv
-      Get-ADGroupMember -Identity $groupesAD[$nbgroupesAD] | Select Name | Export-CSV C:\ADGroupMember-$nomGroupe.csv 
+      If(Test-Path("C:\ADGroupMember-$nomGroupe.csv")) { Remove-Item C:\ADGroupMember-$nomGroupe.csv }
+      Get-ADGroupMember -Identity $groupesAD[$nbgroupesAD] | Select-Object Name | Export-CSV C:\ADGroupMember-$nomGroupe.csv 
     }
     If ($question -eq 'n') { 
-      Write-Host "Liste des utilisateurs : " -ForegroundColor Yellow
-      Get-ADGroupMember -Identity $groupesAD[$nbgroupesAD] | Select Name 
+      Write-Host "Liste des utilisateurs du groupe $nomGroupe : " -ForegroundColor Yellow
+      Get-ADGroupMember -Identity $groupesAD[$nbgroupesAD] | Select-Object Name 
     }
   }
 }

@@ -24,7 +24,7 @@ $lettrepartage      = 'Z:' # Lettre réseau
 # Liste des droits d'accès pour les fichiers
 If ($debug -eq 0) { 
   $groupesfichiers = @()
-  $groupes = Get-ADGroup -SearchBase $ougroupe -Filter * | Sort-Object | select Name 
+  $groupes = Get-ADGroup -SearchBase $ougroupe -Filter * | Sort-Object | Select-Object Name 
 
   ForEach ($groupe in $groupes) { $groupesfichiers += $groupe.Name }
 }
