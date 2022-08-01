@@ -106,16 +106,19 @@ If ($debug -eq 0) {
 # Ajout des groupes pour l'accès au fichiers des autres services
 Write-Host "Ajout des groupes pour l'accès au fichiers des autres services" -ForegroundColor Green
 If ($debug -eq 0) { 
-  $continue = $true
-  while ($continue){
-    For($i = 0; $i -lt $groupesfichiers.count; $i++){
-      Write-Host "$($i): $($groupesfichiers[$i])"
+  $questionGroupe = Read-Host "Voulez-vous ajouter d'autres groupes(o/n) ?"
+  If ($questionGroupe -eq 'o') { 
+    $continue = $true
+    while ($continue){
+      For($i = 0; $i -lt $groupesfichiers.count; $i++){
+        Write-Host "$($i): $($groupesfichiers[$i])"
+      }
+      $nbgroupesfichiers = Read-Host "Choisir le numero du groupe"
+      Add-ADGroupMember -Identity $groupesfichiers[$nbgroupesfichiers] -Members $login
+      
+      $confirmation = Read-Host "Voulez-vous ajouter d'autres groupes(o/n) ?"
+      If ($confirmation -ne 'o') { $continue = $false }
     }
-    $nbgroupesfichiers = Read-Host "Choisir le numero du groupe"
-    Add-ADGroupMember -Identity $groupesfichiers[$nbgroupesfichiers] -Members $login
-    
-    $confirmation = Read-Host "Voulez-vous ajouter d'autres groupes(o/n) ?"
-    If ($confirmation -ne 'o') { $continue = $false }
   }
 }
 
