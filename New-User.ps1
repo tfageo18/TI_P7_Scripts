@@ -48,7 +48,7 @@ $nomcomplet = $prenom+' '+$nom
 $login = $prenom.substring(0, 1).ToLower()+'.'+$nom.ToLower()
 
 # Génération du HomeDirectory 
-$cheminpartage = $cheminpartage+'\'+$login+'$'  
+$cheminpartage = $cheminpartage+'\'+$login 
 
 # Choix du service depuis la liste
 For($i = 0; $i -lt $services.count; $i++){
@@ -79,6 +79,7 @@ If ($debug -eq 0) {
   -UserPrincipalName $email `
   -EmailAddress $email `
   -Department $service `
+  -Title $fonction `
   -Company 'Axeplane' `
   -Path $ous `
   -AccountPassword(Read-Host -AsSecureString "Saisir le mot de passe") `
