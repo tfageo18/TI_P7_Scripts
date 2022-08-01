@@ -9,4 +9,5 @@ Description : Sauvegarde des données utilisateur (c:\users\) vers E:\sauvegarde
 $user             = $env:USERNAME
 $cheminsauvegarde = \\SRVAXEPLANE01\Sauvegardes$\$env:USERNAME
 
-Copy-Item C:\users\$user\* -Destination
+robocopy C:\users\$user\ $cheminsauvegarde /mir /v
+
