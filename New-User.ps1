@@ -72,16 +72,17 @@ Write-Host "Chemin partage : $cheminpartage"
 
 # Création de l'utilisateur
 If ($debug -eq 0) {
+  Write-Host "Création de l'utilisateur" -ForegroundColor Green
   New-ADUser -Name $nomcomplet -GivenName $prenom `
   -Surname $nom `
   -SamAccountName $login `
   -UserPrincipalName $email `
   -EmailAddress $email `
   -Manager $gestionnaire `
-  -Deparment $service `
+  - Department $service `
   -Company 'Axeplane' `
   -Path $ous `
-  -AccountPassword(Read-Host -AsSecureString "Input Password") `
+  -AccountPassword(Read-Host -AsSecureString "Saisir le mot de passe") `
   -Enabled $true `
   -PasswordNeverExpire $false `
   -HomeDirectory $cheminpartage `
@@ -89,15 +90,18 @@ If ($debug -eq 0) {
 }
 
 # Ajout du groupe du service à l'utilisateur
+Write-Host "Ajout du groupe de service" -ForegroundColor Green
 If ($debug -eq 0) { Add-ADGroupMember -Identity $service -Members $login }
 
 # Ajout du groupe pour l'accès aux fichiers de son service
+Write-Host "Ajout du groupe pour l'accès aux fichiers de son service" -ForegroundColor Green
 If ($debug -eq 0) { 
   $nomgroupe = 'GG_'+$service
   Add-ADGroupMember -Identity $nomgroupe -Members $login
 }
 
 # Ajout des groupes pour l'accès au fichiers des autres services
+Write-Host "Ajout des groupes pour l'accès au fichiers des autres services" -ForegroundColor Green
 If ($debug -eq 0) { 
   $continue = $true
   while ($continue){
@@ -113,8 +117,13 @@ If ($debug -eq 0) {
 }
 
 # Création du dossier perso
+Write-Host "Création du dossier de l'utilisateur" -ForegroundColor Green
 $chemindossierperso = $chemindossierperso+'\'+$login
-mkdir $chemindossierperso
-
-# Partage dossier perso
-New-SmbShare -Name $login -Path $chemindossierperso -FullAccess "Administrateurs","Admins du domaine",$login
+If (-Not(Test-Path($chemindossierperso))) { 
+  mkdir $chemindossierperso 
+  $apartager = $true
+}
+Else { 
+  Write-Host "Le dossier de $login existe déjà" -ForegroundColor Red
+  $apartager = $false
+}
