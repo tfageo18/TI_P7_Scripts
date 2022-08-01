@@ -18,8 +18,8 @@ $services           = @('Direction','RH','Finance','Commercial','Logistique','Ma
 $domaineemail       = 'axeplane.loc' # Domaine
 $ous                = 'OU=Utilisateurs,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des utilisateurs
 $ougroupe           = 'OU=Droits fichiers,OU=Groupes,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des groupes
-$chemindossierperso = 'E:\Utilisateurs\' # Chemin dossier perso pour la création
-$cheminpartage      = '\\SRVAXEPLANE01\Utilisateurs$\' # Chemin du partage pour le HomePath
+$chemindossierperso = 'E:\Utilisateurs' # Chemin dossier perso pour la création
+$cheminpartage      = '\\SRVAXEPLANE01\Utilisateurs$' # Chemin du partage pour le HomePath
 $lettrepartage      = 'Z:' # Lettre réseau
 # Liste des droits d'accès pour les fichiers
 If ($debug -eq 0) { 
@@ -78,8 +78,7 @@ If ($debug -eq 0) {
   -SamAccountName $login `
   -UserPrincipalName $email `
   -EmailAddress $email `
-  -Manager $gestionnaire `
-  - Department $service `
+  -Department $service `
   -Company 'Axeplane' `
   -Path $ous `
   -AccountPassword(Read-Host -AsSecureString "Saisir le mot de passe") `
@@ -88,6 +87,9 @@ If ($debug -eq 0) {
   -HomeDirectory $cheminpartage `
   -HomeDrive $lettrepartage `
 }
+
+# Ajout du manager s'il yen a un
+If ($gestionnaire) { Set-ADUser -Identity $login -Manager $gestionnaire }
 
 # Ajout du groupe du service à l'utilisateur
 Write-Host "Ajout du groupe de service" -ForegroundColor Green
@@ -119,11 +121,5 @@ If ($debug -eq 0) {
 # Création du dossier perso
 Write-Host "Création du dossier de l'utilisateur" -ForegroundColor Green
 $chemindossierperso = $chemindossierperso+'\'+$login
-If (-Not(Test-Path($chemindossierperso))) { 
-  mkdir $chemindossierperso 
-  $apartager = $true
-}
-Else { 
-  Write-Host "Le dossier de $login existe déjà" -ForegroundColor Red
-  $apartager = $false
-}
+If (-Not(Test-Path($chemindossierperso))) { mkdir $chemindossierperso }
+Else { Write-Host "Le dossier de $login existe déjà" -ForegroundColor Red }
