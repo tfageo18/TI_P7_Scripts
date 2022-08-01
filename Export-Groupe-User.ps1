@@ -13,25 +13,26 @@ If ($osInfo.ProductType -eq 2) { $debug = 0}
 
 If ($debug -eq 0) { Import-Module ActiveDirectory }
 
-# Saisi du groupe
-$groupe = Read-Host "Saisir le nom du groupe AD"
+# Choix du groupe
+$ou = 'OU=Groupes,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des groupes
+# Liste des droits d'accès pour les fichiers
+If ($debug -eq 0) { 
+  $groupesAD = @()
+  $groupes = Get-ADGroup -SearchBase $ou -Filter * | Sort-Object | select Name 
 
-$continue = $true
-while ($continue){
-  write-host "---------------------- Afficher / Exporter -----------------------”
-  write-host "1. Afficher”
-  write-host "2. Exporter"
-  write-host "x. exit"
-  write-host "--------------------------------------------------------"
-  $choix = read-host "Faire un choix "
-  switch ($choix){
-    1{
-      
-    }
-    2{
+  ForEach ($groupe in $groupes) { $groupesAD += $groupe.Name }
+}
+If ($debug -eq 0) { 
+  For($i = 0; $i -lt $groupesAD.count; $i++){
+    Write-Host "$($i): $($groupesAD[$i])"
+  }
+  $nbgroupesAD = Read-Host "Choisir le numero du groupe"
 
-    }
-    'x' {$continue = $false}
-    default {Write-Host "Choix invalide"-ForegroundColor Red}
+  $nomGroupe  = $groupesAD[$nbgroupesAD]
+  $nbuser     = (Get-ADGroup -Identity $groupesAD[$nbgroupesAD] -Properties *).Member.Count
+  Write-Host "Nombre d'utilisateur du groupe $nomGroupe : $nbuser" -ForegroundColor Green
+  If ($nbuser -gt 0) {
+    Write-Host "Liste des utilisateurs : " -ForegroundColor Yellow
+    Get-ADGroupMember -Identity $groupesAD[$nbgroupesAD] | Select Name
   }
 }
