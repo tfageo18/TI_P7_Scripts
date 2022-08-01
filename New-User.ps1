@@ -24,7 +24,7 @@ $lettrepartage      = 'Z:' # Lettre réseau
 # Liste des droits d'accès pour les fichiers
 If ($debug -eq 0) { 
   $groupesfichiers = @()
-  $groupes = Get-ADGroup -SearchBase $ougroupe | select Name 
+  $groupes = Get-ADGroup -SearchBase $ougroupe -Filter * | select Name 
 
   ForEach ($groupe in $groupes) { $groupesfichiers += $groupe.Name }
 }
@@ -94,7 +94,7 @@ If ($debug -eq 0) { Add-ADGroupMember -Identity $service -Members $login }
 # Ajout du groupe pour l'accès aux fichiers de son service
 If ($debug -eq 0) { 
   $nomgroupe = 'GG_'+$service
-  Add-ADGroupMember -Identity $nomgroupe -Members $login 
+  Add-ADGroupMember -Identity $nomgroupe -Members $login
 }
 
 # Ajout des groupes pour l'accès au fichiers des autres services
