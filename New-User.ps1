@@ -14,13 +14,14 @@ If ($osInfo.ProductType -eq 2) { $debug = 0}
 If ($debug -eq 0) { Import-Module ActiveDirectory }
 
 # Variables
-$services           = @('Direction','RH','Finance','Commercial','Logistique','Marketing','Stagiaire','Informatique') # Liste des services
-$domaineemail       = 'axeplane.loc' # Domaine
-$ous                = 'OU=Utilisateurs,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des utilisateurs
-$ougroupe           = 'OU=Droits fichiers,OU=Groupes,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des groupes
-$chemindossierperso = 'E:\Utilisateurs' # Chemin dossier perso pour la création
-$cheminpartage      = '\\SRVAXEPLANE01\Utilisateurs$' # Chemin du partage pour le HomePath
-$lettrepartage      = 'Z:' # Lettre réseau
+$services                 = @('Direction','RH','Finance','Commercial','Logistique','Marketing','Stagiaire','Informatique') # Liste des services
+$domaineemail             = 'axeplane.loc' # Domaine
+$ous                      = 'OU=Utilisateurs,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des utilisateurs
+$ougroupe                 = 'OU=Droits fichiers,OU=Groupes,OU=_AXEPLANE,DC=axeplane,DC=loc' # OU des groupes
+$chemindossierperso       = 'E:\Utilisateurs' # Chemin dossier perso pour la création
+$cheminpartage            = '\\SRVAXEPLANE01\Utilisateurs$' # Chemin du partage pour le HomePath
+$chemindossiersauvegarde  =  'E:\Sauvegardes' # Chemin dossier sauvegarde
+$lettrepartage            = 'Z:' # Lettre réseau
 # Liste des droits d'accès pour les fichiers
 If ($debug -eq 0) { 
   $groupesfichiers = @()
@@ -127,6 +128,12 @@ Write-Host "Création du dossier de l'utilisateur" -ForegroundColor Green
 $chemindossierperso = $chemindossierperso+'\'+$login
 If (-Not(Test-Path($chemindossierperso))) { mkdir $chemindossierperso }
 Else { Write-Host "Le dossier de $login existe déjà" -ForegroundColor Red }
+
+# Création du dossier de sauvegarde
+Write-Host "Création du dossier de sauvegarde" -ForegroundColor Green
+$chemindossiersauvegarde = $chemindossiersauvegarde+'\'+$login
+If (-Not(Test-Path($chemindossiersauvegarde))) { mkdir $chemindossiersauvegarde }
+Else { Write-Host "Le dossier de sauvegarde $login existe déjà" -ForegroundColor Red }
 
 # Ajout des droits de l'utilisateur
 $acl        = Get-Acl -Path $chemindossierperso
