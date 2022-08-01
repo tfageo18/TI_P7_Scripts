@@ -22,6 +22,11 @@ If ($debug -eq 0) {
 
   ForEach ($groupe in $groupes) { $groupesAD += $groupe.Name }
 }
+
+# Export
+$question = Read-Host "Voulez-vous un export CSV (o/n) ?"
+
+# Affichage des utilisateurs
 If ($debug -eq 0) { 
   For($i = 0; $i -lt $groupesAD.count; $i++){
     Write-Host "$($i): $($groupesAD[$i])"
@@ -32,7 +37,14 @@ If ($debug -eq 0) {
   $nbuser     = (Get-ADGroup -Identity $groupesAD[$nbgroupesAD] -Properties *).Member.Count
   Write-Host "Nombre d'utilisateur du groupe $nomGroupe : $nbuser" -ForegroundColor Green
   If ($nbuser -gt 0) {
-    Write-Host "Liste des utilisateurs : " -ForegroundColor Yellow
-    Get-ADGroupMember -Identity $groupesAD[$nbgroupesAD] | Select Name
+    
+    If ($question -eq 'o') { 
+      Remove-Item C:\ADGroupMember-$nomGroupe.csv
+      Get-ADGroupMember -Identity $groupesAD[$nbgroupesAD] | Select Name | Export-CSV C:\ADGroupMember-$nomGroupe.csv 
+    }
+    If ($question -eq 'n') { 
+      Write-Host "Liste des utilisateurs : " -ForegroundColor Yellow
+      Get-ADGroupMember -Identity $groupesAD[$nbgroupesAD] | Select Name 
+    }
   }
 }
