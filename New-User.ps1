@@ -127,3 +127,10 @@ Write-Host "Création du dossier de l'utilisateur" -ForegroundColor Green
 $chemindossierperso = $chemindossierperso+'\'+$login
 If (-Not(Test-Path($chemindossierperso))) { mkdir $chemindossierperso }
 Else { Write-Host "Le dossier de $login existe déjà" -ForegroundColor Red }
+
+# Ajout des droits de l'utilisateur
+$acl        = Get-Acl -Path $chemindossierperso
+$permission = $login, 'Read,Modify', 'ContainerInherit, ObjectInherit', 'None', 'Allow' 
+$rule       = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $permission
+$acl.SetAccessRule($rule)
+$acl | Set-Acl -Path $chemindossierperso
