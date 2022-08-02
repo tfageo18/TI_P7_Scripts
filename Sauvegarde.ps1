@@ -9,5 +9,5 @@ Description : Sauvegarde des données utilisateur (c:\users\) vers E:\sauvegarde
 $user             = $env:USERNAME
 $cheminsauvegarde = "\\SRVAXEPLANE01\Sauvegardes$\$user"
 
-robocopy C:\users\$user\ $cheminsauvegarde /mir /v /XD "C:\users\$user\appdata" "C:\users\$user\Application Data" "C:\users\$user\Cookies\" /XF *.blf *.regtrans-ms ntuser.ini ntuser.dat
+robocopy C:\users\$user\ $cheminsauvegarde /mir /v /XD "C:\users\$user\appdata" "C:\users\$user\Application Data" "C:\users\$user\Cookies" "C:\Users\$user\Music" /XF *.blf *.regtrans-ms ntuser.ini ntuser.dat /R:1 /W:1
 
