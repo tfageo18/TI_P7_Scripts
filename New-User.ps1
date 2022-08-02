@@ -47,6 +47,9 @@ $nomcomplet = $prenom+' '+$nom
 
 # Génération du login (1ère lettre du prénom + . + nom de famille)
 $login = $prenom.substring(0, 1).ToLower()+'.'+$nom.ToLower()
+If (([ADSISearcher] "(sAMAccountName=$login)").FindOne()) {
+  $login = Read-Host "Le login $login existe déjà, merci de donner le nouveau login"
+}
 
 # Génération du HomeDirectory 
 $cheminpartage = $cheminpartage+'\'+$login 
@@ -141,3 +144,9 @@ $permission = $login, 'Read,Modify', 'ContainerInherit, ObjectInherit', 'None', 
 $rule       = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $permission
 $acl.SetAccessRule($rule)
 $acl | Set-Acl -Path $chemindossierperso
+
+$acl        = Get-Acl -Path $chemindossiersauvegarde
+$permission = $login, 'Read,Modify', 'ContainerInherit, ObjectInherit', 'None', 'Allow' 
+$rule       = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $permission
+$acl.SetAccessRule($rule)
+$acl | Set-Acl -Path $chemindossiersauvegarde
