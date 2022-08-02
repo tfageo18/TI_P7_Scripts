@@ -7,7 +7,7 @@ Description : Sauvegarde des données utilisateur (c:\users\) vers E:\sauvegarde
 
 #>
 $user             = $env:USERNAME
-$cheminsauvegarde = \\SRVAXEPLANE01\Sauvegardes$\$env:USERNAME
+$cheminsauvegarde = \\SRVAXEPLANE01\Sauvegardes$\$user
 
 robocopy C:\users\$user\ $cheminsauvegarde /mir /v
 
