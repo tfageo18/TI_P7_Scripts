@@ -45,8 +45,9 @@ $fonction = $fonction.substring(0,1).toupper()+$fonction.substring(1).tolower()
 # Concaténation du Prénom et du nom pour le champ Nam de l'ad
 $nomcomplet = $prenom+' '+$nom
 
-# Génération du login (1ère lettre du prénom + . + nom de famille)
-$login = $prenom.substring(0, 1).ToLower()+'.'+$nom.ToLower()
+# Génération du login (1ère lettre du prénom + . + nom de famille sans espace)
+$nomsansespace = $nom -replace '\s',''
+$login = $prenom.substring(0, 1).ToLower()+'.'+$nomsansespace.ToLower()
 If (([ADSISearcher] "(sAMAccountName=$login)").FindOne()) {
   $login = Read-Host "Le login $login existe déjà, merci de donner le nouveau login"
 }
