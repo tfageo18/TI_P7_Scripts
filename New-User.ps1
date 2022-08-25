@@ -33,11 +33,31 @@ If ($debug -eq 0) {
 # Saisie de l'utilisateur
 $nom          = (Read-Host "Saisir le nom").ToUpper()
 $prenom       = Read-Host "Saisir le prenom"
-$fonction     = Read-Host "Saisir la fonction"
-$gestionnaire = Read-Host "Saisir le(a) gestionnaire"
+
+# Choix de la fonction
+If ($debug -eq 0) { 
+  $listesfonction = Get-ADUser -Filter * -SearchBase $ous -Properties * | Select-Object Title
+  For($i = 0; $i -lt $listesfonction.count; $i++){
+    Write-Host "$($i): $($listesfonction[$i])"
+  }
+  $nbFonction = Read-Host "Choisir le numero de la fonction"
+  $fonction = $listesfonction[$nbFonction]
+} ELse { $fonction     = Read-Host "Saisir la fonction" }
+
+# Choix du gestionnaire
+If ($debug -eq 0) { 
+  $listesusersad = Get-ADUser -Filter * -SearchBase $ous -Properties * | Select-Object sAMAccountName
+  For($i = 0; $i -lt $listesusersad.count; $i++){
+    Write-Host "$($i): $($listesusersad[$i])"
+  }
+  $nbGestionnaire = Read-Host "Choisir le numero du gestionnaire"
+  $gestionnaire   = $listesusersad[$nbGestionnaire]
+} Else { $gestionnaire = Read-Host "Saisir le(a) gestionnaire" }
 
 # Passe la première lettre du prénom en Majuscule
 $prenom = $prenom.substring(0,1).toupper()+$prenom.substring(1).tolower()
+
+# voir pour passer la lettre après un - avec une majuscule
 
 # Passe la première lettre de la fonction en Majuscule
 $fonction = $fonction.substring(0,1).toupper()+$fonction.substring(1).tolower()
